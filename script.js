@@ -1,24 +1,48 @@
 const homin = document.querySelector('.character')
-let y = 0
-let x = 0
 
+document.addEventListener('keydown', control)
+function control(e) {
+  switch (e.key) {
+    case 'w':
+      jump()
+      break
+    case 'd':
+      slide()
+      break
+  }
+  if (e.key === 'w') jump()
+}
+
+let gravity = 0.9
+let isJumping = false
+
+let x = 5
+let y = 0
 function jump() {
+  if (isJumping) return
   let timerId = setInterval(function () {
-    y += 30
-    x += 10
-    if (y > 250) {
+    if (y > 120) {
       clearInterval(timerId)
       let timerIdDown = setInterval(function () {
-        y -= 5
-        homin.style.transform = `translate(${x}px,${y}px)`
+        if (y < 0) {
+          clearInterval(timerIdDown)
+          isJumping = false
+        }
+        x += 5
+        y -= 10
+        homin.style.transform = `translate(${x}px,-${y}px)`
       }, 20)
     }
+    x += 5
+    isJumping = true
+    y += 15
+    y = y * gravity
     homin.style.transform = `translate(${x}px,-${y}px)`
   }, 20)
 }
 
-function control(e) {
-  if (e.key === 'w') jump()
-}
-document.addEventListener('keydown', control)
-// div.style.transform = "translate(x,y)"
+// let x = 5
+// function slide() {
+//     x += 5
+//     homin.style.transform = `translate(${x}px ,0px)`
+// }
